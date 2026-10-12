@@ -18,6 +18,9 @@ setproctitle
 PyQt6
 PyQt6-WebEngine
 
+# == For Helper only ==
+evdev
+
 # == For Tray Applet only ==
 # PyGObject (python3-gi)
 

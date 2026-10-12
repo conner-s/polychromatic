@@ -23,6 +23,7 @@ operations of Polychromatic, such as:
 - Playing a "software" effect for a particular device.
 - Autostart the tray applet and resume previous software settings.
 - Monitor and process automatic rules (triggers).
+- Apply button binding profiles by remapping input events.
 
 The helper intends to be as lightweight and minimal as possible as there could
 be multple helper processes running simultaneously. It also is designed to be
@@ -43,6 +44,7 @@ import polychromatic.common as common
 import polychromatic.effects as effects
 import polychromatic.preferences as preferences
 import polychromatic.procpid as procpid
+import polychromatic.remapper as remapper
 
 VERSION = "0.9.8"
 
@@ -65,6 +67,9 @@ class PolychromaticHelper(PolychromaticBase):
         elif self.args.monitor_triggers:
             self.monitor_triggers()
 
+        elif self.args.bindings:
+            self.run_bindings()
+
         elif self.args.run_fx and self.args.device_serial or self.args.device_name:
             self.run_fx(self.args.run_fx, self.args.device_name, self.args.device_serial)
 
@@ -85,6 +90,7 @@ class PolychromaticHelper(PolychromaticBase):
         parser.add_argument("--autostart", action="store_true")
         parser.add_argument("--monitor-triggers", action="store_true")
         parser.add_argument("--run-fx", action="store")
+        parser.add_argument("--bindings", action="store_true")
 
         # Custom effects only
         parser.add_argument("-n", "--device-name", action="store")
@@ -242,6 +248,28 @@ class PolychromaticHelper(PolychromaticBase):
         else:
             self.dbg.stdout("Unknown effect type!", self.dbg.error)
             sys.exit(1)
+
+
+    def run_bindings(self):
+        """
+        Apply the active button binding profile of each supported device until
+        stopped. USR1 reloads the profiles and USR2 stops, like other helpers.
+        """
+        if not remapper.evdev:
+            self.dbg.stdout("Button bindings need the Python 'evdev' module.", self.dbg.error)
+            sys.exit(1)
+
+        process = procpid.ProcessManager("bindings")
+        process.set_component_pid()
+        service = remapper.BindingService(self.paths.bindings, self.dbg)
+
+        def _reload(signum, frame):
+            service.reload_requested = True
+
+        signal.signal(signal.SIGUSR1, _reload)
+        signal.signal(signal.SIGUSR2, lambda signum, frame: sys.exit(0))
+        self.dbg.stdout("Applying button bindings", self.dbg.success, 1)
+        service.run()
 
 
 class EffectPlayback(PolychromaticBase):

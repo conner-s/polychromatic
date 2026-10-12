@@ -88,6 +88,18 @@ class TestBindings(unittest.TestCase):
         self.assertEqual(reloaded.active["name"], "Second")
         self.assertEqual(reloaded.active[bindings.STANDARD]["s1"]["text"], "gg")
 
+    def test_store_upgrades_old_factory_bindings(self):
+        folder = tempfile.mkdtemp()
+        profile = bindings.new_profile(self.layout, "Old")
+        profile[bindings.STANDARD]["t1"] = {"type": "mouse", "button": "BTN_EXTRA"}
+        profile[bindings.STANDARD]["b1"] = {"type": "key", "keys": ["KEY_F5"]}
+        with open(os.path.join(folder, "naga-v3.json"), "w") as f:
+            json.dump({"active": profile["id"], "profiles": [profile]}, f)
+
+        store = bindings.ProfileStore(folder, self.layout)
+        self.assertEqual(store.active[bindings.STANDARD]["t1"], self.layout.get_button("t1").default)
+        self.assertEqual(store.active[bindings.STANDARD]["b1"], {"type": "key", "keys": ["KEY_F5"]})
+
     def test_store_keeps_last_profile(self):
         store = bindings.ProfileStore(tempfile.mkdtemp(), self.layout)
         self.assertFalse(store.delete(store.active_id))

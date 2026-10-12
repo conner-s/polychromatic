@@ -7,9 +7,9 @@ and "hypershift" which applies while the Hypershift button is held. Profiles
 are stored per device layout as JSON in the config directory.
 
 Remapping happens at the Linux input-event level, not in device firmware:
-each button is identified by the evdev code it sends ("source"), which a
-remapping service would grab and re-emit. This module only stores and
-describes the bindings; nothing here applies them to the device.
+each button is identified by the evdev code it sends ("source"), which the
+remapping service in remapper.py grabs and re-emits. This module only stores
+and describes the bindings.
 """
 
 import copy
@@ -63,7 +63,7 @@ KEY_LABELS = {
     "KEY_MINUS": "-", "KEY_EQUAL": "=", "KEY_LEFTBRACE": "[", "KEY_RIGHTBRACE": "]",
     "KEY_SEMICOLON": ";", "KEY_APOSTROPHE": "'", "KEY_GRAVE": "`", "KEY_BACKSLASH": "\\",
     "KEY_COMMA": ",", "KEY_DOT": ".", "KEY_SLASH": "/",
-    "KEY_SPACE": "Space", "KEY_ESC": "Esc", "KEY_ENTER": "Enter",
+    "KEY_SPACE": "Space", "KEY_ESC": "Esc", "KEY_ENTER": "Enter", "KEY_KPSLASH": "Keypad /",
 }
 
 MODIFIER_KEYS = ["KEY_LEFTCTRL", "KEY_RIGHTCTRL", "KEY_LEFTSHIFT", "KEY_RIGHTSHIFT",
@@ -75,7 +75,7 @@ class Button(object):
     A physical button on the device.
 
     source is the evdev code the button sends once the kernel driver has
-    handled it, which is what an input-event remapper would intercept.
+    handled it, which is what the remapping service intercepts.
     """
     def __init__(self, uid, name, short, source, default):
         self.uid = uid
@@ -88,11 +88,17 @@ class Button(object):
 class DeviceLayout(object):
     """
     The programmable buttons of one device model.
+
+    version goes up when a button's factory binding changes. old_defaults maps
+    each earlier version to the factory bindings that changed after it, so
+    saved profiles can be moved onto the new ones.
     """
-    def __init__(self, uid, name, buttons):
+    def __init__(self, uid, name, buttons, version=1, old_defaults=None):
         self.uid = uid
         self.name = name
         self.buttons = buttons
+        self.version = version
+        self.old_defaults = old_defaults or {}
 
     def get_button(self, uid):
         for button in self.buttons:
@@ -127,20 +133,28 @@ def _naga_v3_layout():
         number = str(index + 1)
         buttons.append(Button("s" + number, "Side " + number, number, code, _key(code)))
 
-    # The driver turns wheel tilt, the DPI buttons and the ring finger
-    # Hypershift button into F13-F17 key events.
-    # TODO: Confirm which codes the two top-left buttons send on the device.
+    # The driver turns the DPI buttons, wheel tilt, the ring finger Hypershift
+    # button and the lower button below the wheel ("AI Prompt") into F13-F18.
+    # The device does not change DPI by itself, so the remapper does.
     buttons += [
-        Button("t1", "Top-left 1", "T1", "BTN_EXTRA", _mouse("BTN_EXTRA")),
-        Button("t2", "Top-left 2", "T2", "BTN_SIDE", _mouse("BTN_SIDE")),
+        Button("t1", "Top-left front", "T1", "KEY_F13", _media("dpi_up")),
+        Button("t2", "Top-left back", "T2", "KEY_F14", _media("dpi_down")),
         Button("mid", "Middle click", "M", "BTN_MIDDLE", _mouse("BTN_MIDDLE")),
         Button("tl", "Tilt left", "‹", "KEY_F15", _mouse("HWHEEL_LEFT")),
         Button("tr", "Tilt right", "›", "KEY_F16", _mouse("HWHEEL_RIGHT")),
-        Button("b1", "Below wheel 1", "W1", "KEY_F13", _media("dpi_up")),
-        Button("b2", "Below wheel 2", "W2", "KEY_F14", _media("dpi_down")),
+        Button("b1", "Below wheel upper", "W1", "KEY_KPSLASH", _key("KEY_KPSLASH")),
+        Button("b2", "Below wheel lower", "W2", "KEY_F18", _key("KEY_F18")),
         Button("rf", "Ring finger", "RF", "KEY_F17", _media("hypershift")),
     ]
-    return DeviceLayout("naga-v3", "Razer Naga V3", buttons)
+    # Version 1 guessed the top-left buttons and put the DPI buttons below the
+    # wheel, before the codes were checked on the device.
+    old_defaults = {1: {
+        "t1": _mouse("BTN_EXTRA"),
+        "t2": _mouse("BTN_SIDE"),
+        "b1": _media("dpi_up"),
+        "b2": _media("dpi_down"),
+    }}
+    return DeviceLayout("naga-v3", "Razer Naga V3", buttons, 2, old_defaults)
 
 
 def get_layout(device_name):
@@ -352,14 +366,31 @@ class ProfileStore(object):
             self.profiles = [new_profile(self.layout, "Default")]
             self.profiles[0]["id"] = "default"
 
+        for version in range(data.get("version", 1), self.layout.version):
+            for profile in self.profiles:
+                self._upgrade(profile, self.layout.old_defaults.get(version, {}))
+
         self.active_id = data.get("active")
         if not self.get(self.active_id):
             self.active_id = self.profiles[0]["id"]
 
     def save(self):
+        # Replace the file whole, so the remapping service never reads it half
+        # written and falls back to a blank profile.
         os.makedirs(os.path.dirname(self.path), exist_ok=True)
-        with open(self.path, "w") as f:
-            json.dump({"active": self.active_id, "profiles": self.profiles}, f, indent=4)
+        temp_path = self.path + ".tmp"
+        with open(temp_path, "w") as f:
+            json.dump({"version": self.layout.version, "active": self.active_id, "profiles": self.profiles}, f, indent=4)
+        os.replace(temp_path, self.path)
+
+    def _upgrade(self, profile, old_defaults):
+        """
+        Move buttons still on an old factory binding to the current one, and
+        keep any the user changed.
+        """
+        for uid, old in old_defaults.items():
+            if profile[STANDARD].get(uid) == old:
+                profile[STANDARD][uid] = copy.deepcopy(self.layout.get_button(uid).default)
 
     def get(self, profile_id):
         for profile in self.profiles:

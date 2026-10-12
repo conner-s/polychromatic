@@ -18,7 +18,7 @@ from PyQt6.QtWidgets import (QAbstractItemView, QApplication, QButtonGroup,
                              QSizePolicy, QTableWidget, QTableWidgetItem,
                              QToolButton, QVBoxLayout, QWidget)
 
-from .. import bindings
+from .. import bindings, procpid
 from ..qt.flowlayout import FlowLayout as QFlowLayout
 from . import shared
 
@@ -723,5 +723,13 @@ class ButtonBindings(shared.TabData):
         conflict_groups = len({tuple(sorted([uid] + others)) for uid, others in conflicts.items()})
         if conflict_groups:
             parts.append(self._("[1] conflicts").replace("[1]", str(conflict_groups)))
-        self.status.setText("  ·  ".join(parts) + "\n" + self._("Bindings are saved, but not applied to the device yet."))
+        running = procpid.ProcessManager("bindings").is_another_instance_is_running()
+        if running:
+            applied = self._("Applied by the bindings service.")
+        else:
+            applied = self._("Saved, but not applied: the bindings service is not running.")
+        self.status.setObjectName("BindingMuted" if running else "BindingWarning")
+        self.status.style().unpolish(self.status)
+        self.status.style().polish(self.status)
+        self.status.setText("  ·  ".join(parts) + "\n" + applied)
         return conflicts
