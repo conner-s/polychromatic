@@ -98,6 +98,20 @@ class TestRemapper(unittest.TestCase):
         self.assertEqual(self.actions, ["dpi_up"])
         self.assertEqual(self.output.events, [])
 
+    def test_scroll_mode_is_a_device_action(self):
+        self.bind(bindings.STANDARD, "b1", {"type": "media", "function": "scroll_cycle"})
+        self.click("KEY_KPSLASH")
+        self.assertEqual(self.actions, ["scroll_cycle"])
+        self.assertEqual(self.output.events, [])
+
+    def test_next_scroll_mode(self):
+        modes = ["tactile", "free_spin", "precision_tactile"]
+        self.assertEqual(remapper.next_scroll_mode("scroll_cycle", "tactile", modes), "free_spin")
+        self.assertEqual(remapper.next_scroll_mode("scroll_cycle", "precision_tactile", modes), "tactile")
+        self.assertEqual(remapper.next_scroll_mode("scroll_cycle", "precision_tactile", modes[:2]), "tactile")
+        self.assertEqual(remapper.next_scroll_mode("scroll_precision_tactile", "tactile", modes), "precision_tactile")
+        self.assertIsNone(remapper.next_scroll_mode("scroll_precision_tactile", "tactile", modes[:2]))
+
     def test_text(self):
         self.bind(bindings.STANDARD, "s3", {"type": "text", "text": "Hi!"})
         self.click("KEY_3")

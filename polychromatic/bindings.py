@@ -45,6 +45,10 @@ MEDIA_FUNCTIONS = [
     ("dpi_up", "DPI stage up", "DPI+"),
     ("dpi_down", "DPI stage down", "DPI−"),
     ("dpi_cycle", "DPI stage cycle", "DPI"),
+    ("scroll_tactile", "Scroll mode: Tactile", "Tactile"),
+    ("scroll_free_spin", "Scroll mode: Free spin", "Free"),
+    ("scroll_precision_tactile", "Scroll mode: Precision tactile", "Precise"),
+    ("scroll_cycle", "Scroll mode cycle", "Scroll"),
     ("profile_next", "Next profile", "Profile"),
     ("hypershift", "Hypershift (hold)", "Shift"),
 ]

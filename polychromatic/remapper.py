@@ -47,6 +47,9 @@ SCROLL = {
     "HWHEEL_RIGHT": ("REL_HWHEEL", 1),
 }
 
+# OpenRazer's scroll_mode values, by index.
+SCROLL_MODES = ["tactile", "free_spin", "precision_tactile"]
+
 # Seconds between the events of a macro or text, so applications keep up.
 STEP_GAP = 0.002
 
@@ -373,22 +376,35 @@ class _Group(object):
         elif function in ("dpi_up", "dpi_down", "dpi_cycle"):
             # D-Bus calls are slow enough to delay the next input events.
             threading.Thread(target=step_dpi, args=(self.layout, function, self.dbg), daemon=True).start()
+        elif function.startswith("scroll_"):
+            threading.Thread(target=set_scroll_mode, args=(self.layout, function, self.dbg), daemon=True).start()
+
+
+def _openrazer_devices(layout, dbg):
+    """
+    The connected OpenRazer devices that use a layout.
+    """
+    try:
+        from openrazer.client import DeviceManager
+        devices = DeviceManager().devices
+    except Exception as e:
+        dbg.stdout("Cannot reach OpenRazer: " + str(e), dbg.error)
+        return []
+
+    matching = []
+    for device in devices:
+        device_layout = bindings.get_layout(device.name)
+        if device_layout and device_layout.uid == layout.uid:
+            matching.append(device)
+    return matching
 
 
 def step_dpi(layout, function, dbg):
     """
     Move the device's active DPI stage through OpenRazer.
     """
-    try:
-        from openrazer.client import DeviceManager
-        devices = DeviceManager().devices
-    except Exception as e:
-        dbg.stdout("Cannot change DPI, OpenRazer is unavailable: " + str(e), dbg.error)
-        return
-
-    for device in devices:
-        device_layout = bindings.get_layout(device.name)
-        if not device_layout or device_layout.uid != layout.uid or not device.has("dpi_stages"):
+    for device in _openrazer_devices(layout, dbg):
+        if not device.has("dpi_stages"):
             continue
         active, stages = device.dpi_stages
         if function == "dpi_up":
@@ -399,6 +415,41 @@ def step_dpi(layout, function, dbg):
             active = active % len(stages) + 1
         device.dpi_stages = (active, stages)
         dbg.stdout("{0}: DPI stage {1} of {2}".format(device.name, active, len(stages)), dbg.action, 1)
+
+
+def next_scroll_mode(function, current, available):
+    """
+    Returns the scroll mode a function switches to, or None when the device
+    does not have that mode.
+    """
+    if function == "scroll_cycle":
+        if current not in available:
+            return available[0]
+        return available[(available.index(current) + 1) % len(available)]
+    mode = function[len("scroll_"):]
+    return mode if mode in available else None
+
+
+def set_scroll_mode(layout, function, dbg):
+    """
+    Change the device's scroll wheel mode through OpenRazer.
+    """
+    for device in _openrazer_devices(layout, dbg):
+        if not device.has("scroll_mode"):
+            continue
+        if device.has("scroll_mode_options"):
+            available = list(device.scroll_mode_options)
+        else:
+            # OpenRazer 3.12 and earlier only have the first two modes.
+            available = SCROLL_MODES[:2]
+        index = device.scroll_mode
+        current = SCROLL_MODES[index] if index < len(SCROLL_MODES) else None
+        mode = next_scroll_mode(function, current, available)
+        if mode is None:
+            dbg.stdout("{0}: Has no {1} scroll mode".format(device.name, function[len("scroll_"):]), dbg.error)
+            continue
+        device.scroll_mode = SCROLL_MODES.index(mode)
+        dbg.stdout("{0}: Scroll mode {1}".format(device.name, mode), dbg.action, 1)
 
 
 def _is_virtual(path):
