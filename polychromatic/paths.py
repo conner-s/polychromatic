@@ -29,6 +29,7 @@ class Paths():
         # Save Data
         self.devices = os.path.join(self.config, "devices")
         self.dpi = os.path.join(self.config, "dpi")
+        self.bindings = os.path.join(self.config, "bindings")
         self.effects = os.path.join(self.config, "effects")
         self.presets = os.path.join(self.config, "presets")
         self.custom_icons = os.path.join(self.config, "custom_icons")

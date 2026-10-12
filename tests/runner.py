@@ -6,6 +6,7 @@
 import sys
 import unittest
 
+import bindings
 import internals
 import effects
 import fx
@@ -14,6 +15,7 @@ import middleman
 loader = unittest.TestLoader()
 suite  = unittest.TestSuite()
 
+suite.addTests(loader.loadTestsFromModule(bindings))
 suite.addTests(loader.loadTestsFromModule(internals))
 suite.addTests(loader.loadTestsFromModule(effects))
 suite.addTests(loader.loadTestsFromModule(fx))

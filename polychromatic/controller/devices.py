@@ -14,19 +14,20 @@ import webbrowser
 from PyQt6.QtCore import QMargins, QSize, Qt, QThread, QTimer
 from PyQt6.QtGui import QAction, QIcon
 from PyQt6.QtWidgets import (QAbstractItemView, QButtonGroup, QCheckBox,
-                             QComboBox, QDialog, QDialogButtonBox, QHBoxLayout,
-                             QLabel, QPushButton, QRadioButton, QSizePolicy,
-                             QSlider, QTableWidget, QTableWidgetItem,
-                             QToolButton, QTreeWidget, QTreeWidgetItem,
-                             QWidget)
+                             QComboBox, QDialog, QDialogButtonBox, QFileDialog,
+                             QHBoxLayout, QLabel, QMessageBox, QPushButton,
+                             QRadioButton, QSizePolicy, QSlider, QTableWidget,
+                             QTableWidgetItem, QToolButton, QTreeWidget,
+                             QTreeWidgetItem, QWidget)
 
 from polychromatic.backends._backend import compare_version_strings
 from polychromatic.procpid import DeviceSoftwareState
 
-from .. import bulkapply, common
+from .. import bindings, bulkapply, common
 from ..backends._backend import Backend as Backend
 from ..qt.flowlayout import FlowLayout as QFlowLayout
 from . import shared
+from .bindings import ButtonBindings
 
 # Error codes
 ERROR_NO_DEVICE = 0
@@ -50,6 +51,19 @@ class DevicesTab(shared.TabData):
         self.Contents = self.main_window.findChild(QWidget, "DeviceContents")
         self.SidebarTree = self.main_window.findChild(QTreeWidget, "DeviceSidebarTree")
         self.SidebarTree.itemClicked.connect(self._sidebar_changed)
+        self.SidebarTree.itemChanged.connect(self._sidebar_item_renamed)
+
+        # Button profiles for the current device (when it supports bindings)
+        self.button_bindings = None
+        self.profiles_branch = QTreeWidgetItem()
+        self.profiles_branch.setText(0, self._("Button Profiles"))
+        self.profiles_branch.setFlags(Qt.ItemFlag.ItemIsEnabled)
+        self.profiles_branch.section = None
+        self.SidebarTree.addTopLevelItem(self.profiles_branch)
+        self.profiles_branch.setHidden(True)
+        self.ProfileToolbar = self._create_profile_toolbar()
+        self.SidebarTree.parentWidget().layout().addWidget(self.ProfileToolbar)
+        self.ProfileToolbar.setHidden(True)
 
         # Useful complimentary software
         self.input_remapper = shutil.which("input-remapper-gtk")
@@ -161,12 +175,19 @@ class DevicesTab(shared.TabData):
         User chooses an item on the sidebar. The "section" variable is appended
         directly into the QTreeWidgetItem.
         """
+        if item.section in ["apply-to-all", "device-unknown"]:
+            self.button_bindings = None
+            self._populate_profiles()
+
         if item.section == "apply-to-all":
             self.open_apply_to_all()
         elif item.section == "device-unknown":
             self.open_unknown_device(item.device_item)
         elif item.section == "device":
             self.open_device(item.device_item)
+        elif item.section == "button-profile":
+            self.button_bindings.set_profile(item.profile_id)
+            self._populate_profiles()
 
     def _get_device_summary_widget(self, device: Backend.DeviceItem):
         """
@@ -289,6 +310,8 @@ class DevicesTab(shared.TabData):
         of the specified device.
         """
         self.current_device = device
+        self.button_bindings = None
+        self._populate_profiles()
 
         self.set_cursor_busy()
         layout = self.Contents.layout()
@@ -400,8 +423,124 @@ class DevicesTab(shared.TabData):
                 for widget in widgets:
                     layout.addWidget(widget)
 
+        # Button bindings for supported mice
+        button_layout = bindings.get_layout(device.name)
+        if button_layout:
+            store = bindings.ProfileStore(self.paths.bindings, button_layout)
+            self.button_bindings = ButtonBindings(self.appdata, button_layout, store)
+            layout.addWidget(self.button_bindings.widget)
+            self._populate_profiles()
+
         layout.addStretch()
         self.set_cursor_normal()
+
+    def _create_profile_toolbar(self):
+        """
+        Buttons under the sidebar for managing the button profiles.
+        """
+        toolbar = QWidget()
+        toolbar.setLayout(QHBoxLayout())
+        toolbar.layout().setContentsMargins(4, 4, 4, 4)
+        for icon, tooltip, action in [("new", self._("New Profile"), self._new_profile),
+                                      ("clone", self._("Clone Profile"), self._clone_profile),
+                                      ("delete", self._("Delete Profile"), self._delete_profile),
+                                      ("import", self._("Import Profile"), self._import_profile)]:
+            button = QToolButton()
+            button.setIcon(self.widgets.get_icon_qt("general", icon))
+            button.setToolTip(tooltip)
+            button.clicked.connect(action)
+            toolbar.layout().addWidget(button)
+        toolbar.layout().addStretch()
+        return toolbar
+
+    def _populate_profiles(self):
+        """
+        List the current device's button profiles in the sidebar. Double click
+        a profile to rename it.
+        """
+        self.SidebarTree.blockSignals(True)
+        self.profiles_branch.takeChildren()
+
+        visible = self.button_bindings is not None
+        self.profiles_branch.setHidden(not visible)
+        self.ProfileToolbar.setHidden(not visible)
+
+        if visible:
+            store = self.button_bindings.store
+            for profile in store.profiles:
+                item = QTreeWidgetItem()
+                item.setText(0, profile["name"])
+                item.setIcon(0, QIcon(common.get_icon("general", "macro-keys")))
+                item.setFlags(item.flags() | Qt.ItemFlag.ItemIsEditable)
+                item.section = "button-profile"
+                item.profile_id = profile["id"]
+                self.profiles_branch.addChild(item)
+                if profile["id"] == store.active_id:
+                    item.setSelected(True)
+            self.profiles_branch.setExpanded(True)
+
+        self.SidebarTree.blockSignals(False)
+
+    def _sidebar_item_renamed(self, item, column):
+        if getattr(item, "section", None) != "button-profile":
+            return
+        name = item.text(0).strip()
+        store = self.button_bindings.store
+        profile = store.get(item.profile_id)
+        if name:
+            profile["name"] = name
+            store.save()
+            self.button_bindings.refresh()
+        else:
+            self.SidebarTree.blockSignals(True)
+            item.setText(0, profile["name"])
+            self.SidebarTree.blockSignals(False)
+
+    def _new_profile(self):
+        store = self.button_bindings.store
+        name = self._("Profile [1]").replace("[1]", str(len(store.profiles) + 1))
+        store.add(bindings.new_profile(store.layout, name))
+        self.button_bindings.set_profile(store.active_id)
+        self._populate_profiles()
+
+    def _clone_profile(self):
+        store = self.button_bindings.store
+        name = self._("[1] (copy)").replace("[1]", store.active["name"])
+        store.add(bindings.clone_profile(store.active, name))
+        self.button_bindings.set_profile(store.active_id)
+        self._populate_profiles()
+
+    def _delete_profile(self):
+        store = self.button_bindings.store
+        if len(store.profiles) < 2:
+            self.widgets.open_dialog(self.widgets.dialog_generic, self._("Delete Profile"),
+                                     self._("A device needs at least one button profile."))
+            return
+
+        def _delete():
+            store.delete(store.active_id)
+            self.button_bindings.set_profile(store.active_id)
+            self._populate_profiles()
+
+        self.widgets.open_dialog(self.widgets.dialog_warning, self._("Delete Profile"),
+                                 self._("Delete the button profile '[1]'?").replace("[1]", store.active["name"]),
+                                 buttons=[QMessageBox.StandardButton.Yes, QMessageBox.StandardButton.No],
+                                 default_button=QMessageBox.StandardButton.No,
+                                 actions={QMessageBox.StandardButton.Yes: _delete})
+
+    def _import_profile(self):
+        store = self.button_bindings.store
+        path, _filter = QFileDialog.getOpenFileName(self.main_window, self._("Import Profile"), "", self._("Button profile") + " (*.json)")
+        if not path:
+            return
+        try:
+            store.import_file(path)
+        except (OSError, ValueError) as e:
+            self.widgets.open_dialog(self.widgets.dialog_error, self._("Import Profile"),
+                                     self._("This file is not a button profile."), details=str(e))
+            return
+        self.button_bindings.set_profile(store.active_id)
+        self._populate_profiles()
 
     def reload_device(self):
         """
