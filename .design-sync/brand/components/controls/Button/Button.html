@@ -1,0 +1,31 @@
+<!-- @dsCard group="Controls" -->
+<!doctype html>
+<html><head><meta charset="utf-8">
+  <title>Button</title>
+  <link rel="stylesheet" href="../../../styles.css">
+  <style>
+    body { margin: 0; padding: 20px; background: #000; }
+    .ref { margin-top: 20px; border-top: 1px dashed #2D2D2D; padding-top: 10px; }
+    .ref p { margin: 0 0 6px; color: #828282; font-size: 12px; }
+    .ref img { display: block; max-width: 100%; }
+  </style>
+</head>
+<body class="pc-app">
+<section class="pc-group"><h3 class="pc-group__title">Buttons</h3>
+  <div class="pc-row"><div class="pc-row__label">Push button</div><div class="pc-row__controls">
+    <button class="pc-button">Apply</button>
+    <button class="pc-button"><img class="pc-icon" src="../../../assets/img-idle/general/save.svg" alt="">Save</button>
+    <button class="pc-button"><img class="pc-icon" src="../../../assets/img-idle/general/delete.svg" alt="">Delete</button>
+    <button class="pc-button" disabled>Disabled</button>
+  </div></div>
+  <div class="pc-row"><div class="pc-row__label">Toggle</div><div class="pc-row__controls">
+    <button class="pc-button" aria-pressed="false">400</button>
+    <button class="pc-button" aria-pressed="true">1800</button>
+    <button class="pc-button" aria-pressed="false">3200</button>
+  </div></div>
+  <div class="pc-row"><div class="pc-row__label">Flat</div><div class="pc-row__controls">
+    <button class="pc-button pc-button--flat"><img class="pc-icon" src="../../../assets/img-idle/general/external.svg" alt="">Flat action</button>
+  </div></div>
+</section>
+<div class="ref"><p>Qt reference (real render of style.qss)</p><img src="../../../assets/reference/buttons.png" alt="Qt buttons"></div>
+</body></html>

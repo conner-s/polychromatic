@@ -16,3 +16,6 @@ locale/*/LC_MESSAGES/
 # Development
 savedatadev/
 /venv/
+
+# Claude Design sync output
+ds-bundle/

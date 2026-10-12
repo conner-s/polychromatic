@@ -1,0 +1,39 @@
+<!-- @dsCard group="Controls" -->
+<!doctype html>
+<html><head><meta charset="utf-8">
+  <title>Form controls</title>
+  <link rel="stylesheet" href="../../../styles.css">
+  <style>
+    body { margin: 0; padding: 20px; background: #000; }
+    .ref { margin-top: 20px; border-top: 1px dashed #2D2D2D; padding-top: 10px; }
+    .ref p { margin: 0 0 6px; color: #828282; font-size: 12px; }
+    .ref img { display: block; max-width: 100%; }
+  </style>
+</head>
+<body class="pc-app">
+<section class="pc-group"><h3 class="pc-group__title">Form Controls</h3>
+  <div class="pc-row"><div class="pc-row__label">Checkbox</div><div class="pc-row__controls">
+    <label class="pc-check"><input type="checkbox" checked>Enabled</label>
+    <label class="pc-check"><input type="checkbox">Disabled-off</label>
+    <label class="pc-check"><input type="checkbox" disabled>Unavailable</label>
+  </div></div>
+  <div class="pc-row"><div class="pc-row__label">Radio</div><div class="pc-row__controls">
+    <label class="pc-radio"><input type="radio" name="r" checked><img src="../../../assets/img/params/left.svg" alt="">Left</label>
+    <label class="pc-radio"><input type="radio" name="r"><img src="../../../assets/img/params/right.svg" alt="">Right</label>
+    <label class="pc-radio"><input type="radio" disabled>Unavailable</label>
+  </div></div>
+  <div class="pc-row"><div class="pc-row__label">Combo box</div><div class="pc-row__controls">
+    <select class="pc-select"><option>Mouse Button 4</option><option>Keyboard: Ctrl+C</option></select>
+    <select class="pc-select" disabled style="width:135px"><option>Disabled</option></select>
+  </div></div>
+  <div class="pc-row"><div class="pc-row__label">Slider</div><div class="pc-row__controls">
+    <input class="pc-slider" type="range" value="60" style="--value:60">
+    <input class="pc-slider" type="range" value="40" style="--value:40" disabled>
+  </div></div>
+  <div class="pc-row"><div class="pc-row__label">Spin / text</div><div class="pc-row__controls">
+    <input class="pc-spin" type="number" value="1800" style="width:115px">
+    <input class="pc-input" type="text" value="MMO Rotation" placeholder="Profile name" style="width:205px">
+  </div></div>
+</section>
+<div class="ref"><p>Qt reference (real render of style.qss)</p><img src="../../../assets/reference/form-controls.png" alt="Qt form controls"></div>
+</body></html>

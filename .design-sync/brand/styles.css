@@ -1,0 +1,268 @@
+/*
+ * Polychromatic — CSS port of the Qt theme (data/qt/style.qss on Fusion).
+ * Every value below traces to style.qss, the .ui files, or controller/shared.py.
+ * Use the pc-* classes; wrap the whole UI in .pc-app.
+ */
+@import url("tokens/colors.css");
+@import url("tokens/metrics.css");
+
+@font-face {
+  font-family: "Play";
+  src: url("fonts/Play-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+/* ---------- Root ---------- */
+.pc-app {
+  background: var(--pc-bg-window);
+  color: var(--pc-text);
+  font-family: var(--pc-font);
+  font-size: var(--pc-text-md);
+  line-height: 1.35;
+  -webkit-font-smoothing: antialiased;
+}
+.pc-app *, .pc-app *::before, .pc-app *::after { box-sizing: border-box; }
+.pc-app ::selection { background: var(--pc-secondary); color: var(--pc-text-strong); }
+.pc-app :disabled, .pc-app .is-disabled { cursor: default; }
+
+/* ---------- Window chrome ---------- */
+.pc-window { display: flex; flex-direction: column; min-height: 100%; background: var(--pc-bg-window); }
+
+.pc-menubar {
+  display: flex; background: #000 url("assets/img/header/menubar.png") no-repeat right bottom;
+  color: var(--pc-text);
+}
+.pc-menubar__item { padding: 5px 10px; color: var(--pc-text-menu); background: transparent; border: 0; font: inherit; }
+.pc-menubar__item:hover { background: var(--pc-bg-hover); color: var(--pc-text-strong); }
+.pc-menubar__item:active, .pc-menubar__item.is-open { background: var(--pc-secondary); color: var(--pc-text-strong); }
+
+.pc-menu { background: #000; border: 1px solid var(--pc-border); padding: 0; min-width: 180px; }
+.pc-menu__item { display: flex; gap: 8px; align-items: center; padding: 4px 20px; color: var(--pc-text); }
+.pc-menu__item:hover { background: var(--pc-bg-menu-hover); color: var(--pc-text-strong); }
+.pc-menu__item.is-checked { background: var(--pc-secondary-dim); }
+.pc-menu__item.is-disabled { color: var(--pc-text-disabled-menu); }
+.pc-menu__separator { height: 1px; margin: 3px 0; background: var(--pc-bg); }
+
+.pc-header {
+  min-height: 50px; display: flex; align-items: center; padding: 0 10px;
+  background: #000 url("assets/img/header/header.png") no-repeat right bottom;
+}
+.pc-header__title { font-size: var(--pc-text-header); color: var(--pc-primary); margin: 0; font-weight: 400; }
+
+.pc-maintabs {
+  display: flex; background: #000 url("assets/img/header/tabs.png") no-repeat right top;
+  border-bottom: 1px solid var(--pc-border);
+}
+.pc-maintab {
+  display: inline-flex; align-items: center; gap: 4px;
+  font: inherit; color: var(--pc-text); background: transparent; cursor: pointer;
+  border: 1px solid var(--pc-border); border-bottom: 2px solid var(--pc-border);
+  padding: 4px 6px 4px 8px; height: 30px; margin-bottom: -1px;
+}
+.pc-maintab:hover { border-color: var(--pc-border-hover); border-bottom-color: transparent; color: var(--pc-text-hover-dim); }
+.pc-maintab.is-active, .pc-maintab[aria-selected="true"] {
+  background: #000; color: var(--pc-primary); border-color: var(--pc-primary); border-bottom-color: transparent;
+}
+.pc-maintab:disabled { color: var(--pc-text-disabled); }
+
+.pc-body { display: flex; flex: 1; min-height: 0; }
+
+.pc-footer {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  padding: 4px 8px; background: #000; border-top: 1px solid var(--pc-border);
+}
+.pc-status { color: var(--pc-text); }
+
+/* ---------- Sidebar (tree) ---------- */
+.pc-sidebar {
+  width: var(--pc-sidebar-w); flex: none; background: #000;
+  border: 1px solid var(--pc-border); overflow: auto; padding: 0 0 8px;
+}
+.pc-sidebar__heading {
+  color: var(--pc-text-heading); border-bottom: 1px solid var(--pc-border-heading);
+  padding: 10px 5px 4px 8px; margin-top: 4px; min-height: 32px; display: flex; align-items: flex-end;
+}
+.pc-sidebar__item {
+  display: flex; align-items: center; gap: 8px; width: 100%;
+  height: var(--pc-sidebar-item-h); padding: 2px 4px 2px 8px;
+  color: var(--pc-text); background: transparent; border: 0; font: inherit; text-align: left; cursor: pointer;
+}
+.pc-sidebar__item:hover { background: var(--pc-bg-menu-hover); color: var(--pc-text-strong); }
+.pc-sidebar__item.is-selected, .pc-sidebar__item[aria-selected="true"] { background: var(--pc-secondary); color: var(--pc-text-strong); }
+.pc-sidebar__item.is-disabled { color: #202020; }
+.pc-sidebar__item img, .pc-sidebar__item .pc-icon { width: var(--pc-icon-lg); height: var(--pc-icon-lg); flex: none; }
+
+/* ---------- Content area ---------- */
+.pc-content { flex: 1; min-width: 0; overflow: auto; background: var(--pc-bg-content); border: 1px solid var(--pc-border); }
+
+.pc-summary { display: flex; align-items: center; gap: 16px; background: #000; padding: 8px 8px 8px 14px; min-height: 115px; }
+.pc-summary__image { width: 90px; height: 90px; flex: none; }
+.pc-summary::before { content: ""; flex: 0 1 150px; } /* Qt layout quirk: a leading spacer pushes the block right */
+.pc-summary__main { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+.pc-summary__title { font-size: var(--pc-text-lg); color: var(--pc-primary); margin: 0; font-weight: 400; }
+.pc-summary__indicators { display: flex; flex-wrap: nowrap; gap: 4px 16px; }
+.pc-indicator { display: inline-flex; align-items: center; gap: 6px; }
+.pc-indicator img { width: var(--pc-icon-md); height: var(--pc-icon-md); }
+.pc-summary__actions { align-self: flex-start; display: flex; gap: 6px; }
+
+/* Group box: a titled top rule (10px stub, title, rule to the edge), no box */
+.pc-group { margin: 8px 0 0; padding: 0 10px 6px; }   /* QGroupBox padding: 10px */
+.pc-group__title { display: flex; align-items: center; gap: 4px; margin: 0 -10px 6px; color: var(--pc-text); font-size: inherit; font-weight: 400; }
+.pc-group__title::before { content: ""; width: 10px; height: 1px; background: var(--pc-border-group); }
+.pc-group__title::after { content: ""; flex: 1; height: 1px; background: var(--pc-border-group); }
+
+/* Option row: fixed 120px label column, controls to the right */
+.pc-row { display: flex; align-items: flex-start; gap: var(--pc-gap); padding: var(--pc-row-pad-y) var(--pc-row-pad-x); }
+.pc-row__label { width: var(--pc-row-label-w); flex: none; padding-top: 2px; color: var(--pc-text); }
+.pc-row__controls { flex: 1; display: flex; flex-wrap: wrap; align-items: center; gap: var(--pc-gap); min-width: 0; }
+.pc-row__controls--vertical { flex-direction: column; align-items: flex-start; }
+
+/* ---------- Buttons ---------- */
+.pc-button {
+  display: inline-flex; align-items: center; justify-content: center; gap: 4px;
+  font: inherit; color: var(--pc-text-button); background: var(--pc-bg);
+  border: var(--pc-border-w-button) solid var(--pc-border); border-radius: 0;
+  padding: var(--pc-pad-button); min-height: 28px; cursor: pointer; white-space: nowrap;
+}
+.pc-button:focus-visible { background: var(--pc-bg-pressed); color: var(--pc-text-strong); outline: none; }
+.pc-button:hover { background: var(--pc-bg-hover); color: var(--pc-text-strong); }
+.pc-button:active { background: var(--pc-bg-pressed); border-color: var(--pc-border-pressed); color: var(--pc-primary); }
+.pc-button.is-checked, .pc-button[aria-pressed="true"] { background: var(--pc-secondary); color: var(--pc-text-strong); }
+.pc-button.is-checked:hover, .pc-button[aria-pressed="true"]:hover { background: var(--pc-secondary-hover); }
+.pc-button.is-checked:active, .pc-button[aria-pressed="true"]:active { background: var(--pc-secondary-pressed); }
+.pc-button:disabled, .pc-button.is-disabled { background: var(--pc-bg-disabled); color: var(--pc-text-disabled); }
+.pc-button--flat { border: 0; background: transparent; }
+.pc-button--flat:hover { background: var(--pc-bg-hover); }
+.pc-button--small { padding: 2px 8px; min-height: 0; }
+.pc-button .pc-icon { width: var(--pc-icon-sm); height: var(--pc-icon-sm); }
+
+/* Effect / mode tool button: 40px icon above label, 105x70 minimum */
+.pc-effect-btn {
+  display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  min-width: var(--pc-effect-btn-w); min-height: var(--pc-effect-btn-h); padding: 4px 8px;
+  font: inherit; color: var(--pc-text-button); background: var(--pc-bg);
+  border: var(--pc-border-w-button) solid var(--pc-border); cursor: pointer;
+}
+.pc-effect-btn img, .pc-effect-btn .pc-icon { width: var(--pc-effect-icon); height: var(--pc-effect-icon); }
+.pc-effect-btn:hover { background: var(--pc-bg-hover); color: var(--pc-text-strong); }
+.pc-effect-btn:active { background: var(--pc-bg-pressed); border-color: var(--pc-border-pressed); color: var(--pc-primary); }
+.pc-effect-btn.is-checked, .pc-effect-btn[aria-pressed="true"] { background: var(--pc-secondary); color: var(--pc-text-strong); }
+.pc-effect-btn.is-checked:hover, .pc-effect-btn[aria-pressed="true"]:hover { background: var(--pc-secondary-hover); }
+.pc-effect-btn:disabled { background: var(--pc-bg-disabled); color: var(--pc-text-disabled); }
+
+/* Toolbar */
+.pc-toolbar { display: flex; align-items: center; background: #000; margin: 4px 0; gap: 0; color: var(--pc-text); }
+.pc-toolbar .pc-button { background: transparent; border: 1px solid transparent; padding: 4px; }
+.pc-toolbar .pc-button:hover { background: var(--pc-bg-hover); }
+.pc-toolbar__separator { width: 2px; align-self: stretch; margin: 4px; background: var(--pc-border); }
+
+/* ---------- Icons ----------
+ * Polychromatic SVGs are drawn in #00FF00 (+ #008000 secondary) and recoloured at runtime
+ * (common.get_icon_styles). The bundle ships the three colourings as files:
+ *   assets/img/<folder>/<name>.svg           green original: active / selected / effect + option icons
+ *   assets/img-idle/<folder>/<name>.svg      #DED9CB: icons on idle buttons, tabs, menus
+ *   assets/img-disabled/<folder>/<name>.svg  #575757: icons on disabled controls
+ * (img-idle / img-disabled exist for the general/ and effects/ folders.)
+ */
+.pc-icon { display: inline-block; width: 16px; height: 16px; flex: none; vertical-align: middle; }
+
+/* ---------- Form controls ---------- */
+.pc-check, .pc-radio { display: inline-flex; align-items: center; gap: 5px; color: var(--pc-text); cursor: pointer; }
+.pc-check input, .pc-radio input { appearance: none; -webkit-appearance: none; margin: 0; width: 16px; height: 16px; flex: none; cursor: pointer; }
+.pc-check input { background: var(--pc-bg-control) center / 14px no-repeat; }
+.pc-check input:hover { background-color: #9a9a9a; }
+.pc-check input:active { background-color: #676767; }
+.pc-check input:checked { background-color: var(--pc-primary); background-image: url("assets/qt/checkbox.svg"); }
+.pc-check input:checked:hover { background-color: var(--pc-primary-hover); }
+.pc-check input:disabled { background-color: var(--pc-bg-control-disabled); }
+.pc-check:has(input:checked), .pc-radio:has(input:checked) { color: var(--pc-primary); }
+.pc-check:has(input:disabled), .pc-radio:has(input:disabled) { color: var(--pc-text-disabled); }
+.pc-radio input { background: url("assets/qt/radio-unchecked.svg") center / 16px no-repeat; }
+.pc-radio input:hover { background-image: url("assets/qt/radio-unchecked-hover.svg"); }
+.pc-radio input:checked { background-image: url("assets/qt/radio-checked.svg"); }
+.pc-radio input:checked:hover { background-image: url("assets/qt/radio-checked-hover.svg"); }
+.pc-radio input:disabled { background-image: url("assets/qt/radio-unchecked-disabled.svg"); }
+.pc-radio input:checked:disabled { background-image: url("assets/qt/radio-checked-disabled.svg"); }
+.pc-radio img { width: var(--pc-icon-md); height: var(--pc-icon-md); }
+
+.pc-select {
+  appearance: none; -webkit-appearance: none; font: inherit; color: var(--pc-text-strong);
+  background: var(--pc-bg) url("assets/qt/arrow_down.svg") no-repeat right 6px center / 12px;
+  border: 1px solid var(--pc-border); border-radius: 0; padding: var(--pc-pad-combo); min-width: 6em; min-height: 28px;
+}
+.pc-select:hover, .pc-select:focus { background-color: var(--pc-bg-hover); outline: none; }
+.pc-select:disabled { background-color: #000; color: var(--pc-text-disabled); }
+.pc-select option { background: #000; color: var(--pc-text); }
+
+.pc-input, .pc-spin {
+  font: inherit; color: var(--pc-text-button); background: var(--pc-bg);
+  border: 1px solid var(--pc-border); border-radius: 0; padding: var(--pc-pad-input); min-height: 28px;
+}
+.pc-spin { border-width: 2px; }
+.pc-input:hover, .pc-spin:hover { background: var(--pc-bg-hover); color: var(--pc-text-strong); }
+.pc-input:focus, .pc-spin:focus { outline: none; background: var(--pc-bg-pressed); color: var(--pc-text-strong); }
+.pc-input:disabled, .pc-spin:disabled { background: #000; color: var(--pc-text-disabled); }
+.pc-input::placeholder { color: var(--pc-text-disabled); }
+
+/* Slider: 8px groove #323232 with 1px black border, green fill, 10px grey handle.
+   Set --value (0-100) inline to paint the fill: style="--value:75" */
+.pc-slider {
+  appearance: none; -webkit-appearance: none; height: 10px; min-width: 240px; margin: 6px 0; background: transparent; cursor: pointer;
+  --fill: calc(var(--value, 50) * 1%);
+}
+.pc-slider::-webkit-slider-runnable-track { height: 10px; border: 1px solid #000; background: linear-gradient(90deg, var(--pc-primary) var(--fill), var(--pc-bg) var(--fill)); }
+.pc-slider::-moz-range-track { height: 8px; border: 1px solid #000; background: var(--pc-bg); }
+.pc-slider::-moz-range-progress { height: 8px; background: var(--pc-primary); }
+.pc-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 22px; margin-top: -7px; background: var(--pc-bg-control); border: 1px solid #000; border-radius: 2px; }
+.pc-slider::-moz-range-thumb { width: 10px; height: 20px; background: var(--pc-bg-control); border: 1px solid #000; border-radius: 2px; }
+.pc-slider:disabled::-webkit-slider-runnable-track { background: #000; border-color: var(--pc-bg); }
+.pc-slider:disabled::-moz-range-track { background: #000; border-color: var(--pc-bg); }
+.pc-slider:disabled::-moz-range-progress { background: #000; }
+
+/* Colour swatch + "Change..." button (create_colour_control) */
+.pc-swatch { display: inline-block; width: 80px; height: 28px; background: var(--swatch, var(--pc-primary)); }
+
+/* ---------- Tabs (ordinary QTabWidget) ---------- */
+.pc-tabs { display: flex; border-bottom: 1px solid var(--pc-border); }
+.pc-tab {
+  font: inherit; color: var(--pc-text-strong); background: var(--pc-bg-tab);
+  border: 1px solid var(--pc-border); padding: var(--pc-pad-tab); margin: 0 0 -1px; cursor: pointer;
+}
+.pc-tab:hover { border-color: var(--pc-border-hover); border-bottom-color: transparent; color: var(--pc-text-hover-dim); }
+.pc-tab.is-active, .pc-tab[aria-selected="true"] { background: #000; color: var(--pc-primary); border-color: var(--pc-primary); border-bottom-color: transparent; }
+.pc-tab:disabled { color: var(--pc-text-disabled); }
+.pc-tabpanel { border: 1px solid var(--pc-border); border-top: 0; padding: 9px; background: transparent; }
+
+/* ---------- Lists, trees, tables ---------- */
+.pc-table { width: 100%; border-collapse: collapse; background: #000; color: var(--pc-text-strong); border: 1px solid var(--pc-border); }
+.pc-table th { background: var(--pc-bg); color: #fff; font-weight: 400; text-align: left; padding: 2px 4px; border-right: 1px solid var(--pc-border); }
+.pc-table td { padding: 4px 3px; color: var(--pc-text); }
+.pc-table tbody tr:nth-child(even) { background: var(--pc-bg-dock-title); }
+.pc-table tbody tr:hover { background: var(--pc-bg-row-hover); }
+.pc-table tbody tr.is-selected, .pc-table tbody tr[aria-selected="true"] { background: var(--pc-secondary); }
+.pc-table tbody tr.is-selected td, .pc-table tbody tr[aria-selected="true"] td { color: #fff; }
+.pc-table tbody tr.is-disabled td { color: var(--pc-text-disabled); }
+.pc-table--grid td { border: 1px solid var(--pc-bg); }
+
+.pc-list { list-style: none; margin: 0; padding: 0; background: #000; border: 1px solid var(--pc-border); }
+.pc-list > li { padding: 4px 3px; color: var(--pc-text); }
+.pc-list > li:hover { background: var(--pc-bg-row-hover); }
+.pc-list > li.is-selected { background: var(--pc-secondary); color: #fff; }
+
+/* ---------- Misc ---------- */
+.pc-separator { border: 0; height: 1px; background: var(--pc-border); margin: 6px 0; }
+.pc-tooltip { color: #fff; background: #000; border: 1px solid var(--pc-border); padding: 2px 4px; }
+.pc-dock-title { background: var(--pc-bg-dock-title); padding: 4px; }
+.pc-warning-label { background: #000; border: 1px solid var(--pc-warning-border); color: var(--pc-warning); padding: 5px; }
+.pc-muted { color: var(--pc-text-disabled); }
+.pc-accent { color: var(--pc-primary); }
+.pc-mono { font-family: var(--pc-font-mono); }
+.pc-scroll::-webkit-scrollbar { width: 16px; height: 16px; background: transparent; }
+.pc-scroll::-webkit-scrollbar-thumb { background: var(--pc-scrollbar); border: 3px solid transparent; background-clip: content-box; min-height: 25px; }
+
+/* Empty state ("watermark" page) */
+.pc-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 32px; gap: 0; }
+.pc-empty img { width: 375px; max-width: 100%; }
+.pc-empty__title { font-size: var(--pc-text-xl); margin: 10px; font-weight: 400; }
+.pc-empty__subtitle { font-size: 14.67px; margin: 10px; }

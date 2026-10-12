@@ -1,0 +1,60 @@
+/*
+ * Polychromatic colour tokens.
+ * Source of truth: data/qt/style.qss ("Variables" header + per-widget values)
+ * and polychromatic-controller (icon recolour constants). Dark theme only.
+ */
+:root {
+  /* Surfaces */
+  --pc-bg-window: #000000;        /* window, menus, sidebar, lists, toolbars */
+  --pc-bg: #323232;               /* "Background": controls, headers, inputs */
+  --pc-bg-hover: #3f3f3f;         /* hovered button / input / combo */
+  --pc-bg-pressed: #252525;       /* pressed / focused button */
+  --pc-bg-tab: #0d0d0d;           /* unselected tab */
+  --pc-bg-dock-title: #1a1a1a;    /* dock title, alternate list row */
+  --pc-bg-row-hover: #262626;     /* hovered list/tree row */
+  --pc-bg-menu-hover: #333333;    /* hovered menu item, sidebar row */
+  --pc-bg-disabled: #000000;      /* "Secondary/disabled background" */
+  --pc-bg-control: #808080;       /* "Controls background": checkbox box, slider handle */
+  --pc-bg-control-disabled: #353535;
+  /* Content area: vertical gradient used behind every scroll area */
+  --pc-bg-content: linear-gradient(180deg, #000000 0%, #323232 100%);
+
+  /* Brand */
+  --pc-primary: #00ff00;          /* "Primary": active text, selected tab border, slider fill, checked indicator */
+  --pc-primary-hover: #00e600;
+  --pc-primary-pressed: #00b300;
+  --pc-secondary: #008000;        /* "Secondary": selection fill, checked button fill */
+  --pc-secondary-hover: #009a00;
+  --pc-secondary-pressed: #006700;
+  --pc-secondary-dim: #004d00;    /* checked menu item */
+
+  /* Text */
+  --pc-text: #d6d6d6;             /* body text, labels */
+  --pc-text-button: #ded9cb;      /* button / input text; also idle icon colour */
+  --pc-text-strong: #ffffff;      /* hover/selected text */
+  --pc-text-menu: #f0f0f0;
+  --pc-text-heading: #969696;     /* sidebar section heading */
+  --pc-text-hover-dim: #bdbdbd;   /* hovered tab label */
+  --pc-text-disabled: #828282;
+  --pc-text-disabled-menu: #575757; /* disabled menu item; disabled icon colour */
+
+  /* Lines */
+  --pc-border: #2d2d2d;           /* "Border": buttons, inputs, tabs, separators */
+  --pc-border-pressed: #202020;
+  --pc-border-hover: #474747;     /* hovered tab */
+  --pc-border-group: #4d4d4d;     /* group box top rule */
+  --pc-border-heading: #303030;   /* sidebar heading underline */
+
+  /* Status */
+  --pc-warning: #ffa500;
+  --pc-warning-border: rgba(255, 165, 0, 0.5);
+  --pc-scrollbar: rgba(255, 255, 255, 0.5);
+  --pc-scrollbar-disabled: rgba(255, 255, 255, 0.1);
+
+  /* Icon recolour roles (controller sets these on the SVG templates) */
+  --pc-icon-normal: #ded9cb;
+  --pc-icon-disabled: #575757;
+  --pc-icon-active: #00ff00;
+  --pc-icon-secondary-active: #008000;
+  --pc-icon-secondary-inactive: #808080;
+}

@@ -1,0 +1,22 @@
+<!-- @dsCard group="Controls" -->
+<!doctype html>
+<html><head><meta charset="utf-8">
+  <title>Tabs</title>
+  <link rel="stylesheet" href="../../../styles.css">
+  <style>
+    body { margin: 0; padding: 20px; background: #000; }
+    .ref { margin-top: 20px; border-top: 1px dashed #2D2D2D; padding-top: 10px; }
+    .ref p { margin: 0 0 6px; color: #828282; font-size: 12px; }
+    .ref img { display: block; max-width: 100%; }
+  </style>
+</head>
+<body class="pc-app">
+<div class="pc-tabs" role="tablist">
+  <button class="pc-tab" role="tab" aria-selected="true">Buttons</button>
+  <button class="pc-tab" role="tab">Lighting</button>
+  <button class="pc-tab" role="tab">Performance</button>
+  <button class="pc-tab" role="tab" disabled>Disabled</button>
+</div>
+<div class="pc-tabpanel"><p style="margin:0">Ordinary QTabWidget tabs. The main window uses the separate <code>.pc-maintab</code> strip (with icons) instead.</p></div>
+<div class="ref"><p>Qt reference</p><img src="../../../assets/reference/tabs-and-lists.png" alt="Qt tabs and tree"></div>
+</body></html>

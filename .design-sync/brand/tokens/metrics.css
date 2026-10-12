@@ -1,0 +1,41 @@
+/*
+ * Polychromatic type and spacing tokens.
+ * Source: polychromatic-controller (QFont("Play", 10)), controller/shared.py
+ * (row/group/summary metrics) and data/qt/style.qss (paddings).
+ * Qt point sizes are converted at 96 dpi: 10pt = 13.33px.
+ */
+:root {
+  --pc-font: "Play", "DejaVu Sans", sans-serif;
+  --pc-font-mono: monospace;
+  --pc-text-sm: 12px;
+  --pc-text-md: 13.33px;     /* app default: Play 10pt */
+  --pc-text-lg: 17px;        /* summary title */
+  --pc-text-xl: 18.67px;     /* empty-state title: Play 14pt */
+  --pc-text-header: 18.67px; /* window header line under menu bar */
+
+  --pc-radius: 0;            /* everything is square */
+  --pc-radius-handle: 2px;   /* slider handle only */
+
+  --pc-border-w: 1px;
+  --pc-border-w-button: 2px; /* push buttons and spin boxes */
+
+  --pc-pad-button: 4px 16px;
+  --pc-pad-input: 4px;
+  --pc-pad-combo: 5px 20px 5px 5px;
+  --pc-pad-tab: 4px 8px;
+  --pc-pad-item: 4px 3px;
+
+  --pc-row-pad-x: 30px;      /* create_row_widget(): margins 30,5,30,5 */
+  --pc-row-pad-y: 5px;
+  --pc-row-label-w: 120px;   /* fixed label column */
+  --pc-gap: 6px;             /* Qt default layout spacing */
+
+  --pc-sidebar-w: 250px;
+  --pc-sidebar-item-h: 28px;
+  --pc-effect-btn-w: 105px;  /* effect tool buttons: min 105 x 70, 40px icon */
+  --pc-effect-btn-h: 70px;
+  --pc-effect-icon: 40px;
+  --pc-icon-sm: 16px;
+  --pc-icon-md: 22px;
+  --pc-icon-lg: 24px;
+}

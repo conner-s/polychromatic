@@ -1,0 +1,7 @@
+{
+  "projectId": "6b9e6e8a-a250-4b4d-b94d-eabaee894bca",
+  "shape": "brand-reference",
+  "pkg": "polychromatic (PyQt6, no JS package)",
+  "build": ".design-sync/build.sh",
+  "localDir": "ds-bundle"
+}

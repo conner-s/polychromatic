@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 300" width="240" height="300" font-family="Play, sans-serif">
+  <!-- Schematic of a Naga-style 12-button thumb grid (3 columns x 4 rows).
+       Not a traced device outline; verify layout against your own unit.
+       Each key is <g id="key-N" data-key="N"> so designs can target it. -->
+  <rect x="8" y="8" width="224" height="284" rx="28" fill="#0d0d0d" stroke="#2D2D2D" stroke-width="2"/>
+  <g font-size="22" text-anchor="middle" dominant-baseline="central">
+    <g id="key-1" data-key="1"><rect x="30" y="30" width="56" height="56" fill="#323232" stroke="#2D2D2D" stroke-width="2"/><text x="58" y="58" fill="#00FF00">1</text></g>
+    <g id="key-2" data-key="2"><rect x="92" y="30" width="56" height="56" fill="#323232" stroke="#2D2D2D" stroke-width="2"/><text x="120" y="58" fill="#00FF00">2</text></g>
+    <g id="key-3" data-key="3"><rect x="154" y="30" width="56" height="56" fill="#323232" stroke="#2D2D2D" stroke-width="2"/><text x="182" y="58" fill="#00FF00">3</text></g>
+    <g id="key-4" data-key="4"><rect x="30" y="92" width="56" height="56" fill="#323232" stroke="#2D2D2D" stroke-width="2"/><text x="58" y="120" fill="#00FF00">4</text></g>
+    <g id="key-5" data-key="5"><rect x="92" y="92" width="56" height="56" fill="#323232" stroke="#2D2D2D" stroke-width="2"/><text x="120" y="120" fill="#00FF00">5</text></g>
+    <g id="key-6" data-key="6"><rect x="154" y="92" width="56" height="56" fill="#323232" stroke="#2D2D2D" stroke-width="2"/><text x="182" y="120" fill="#00FF00">6</text></g>
+    <g id="key-7" data-key="7"><rect x="30" y="154" width="56" height="56" fill="#323232" stroke="#2D2D2D" stroke-width="2"/><text x="58" y="182" fill="#00FF00">7</text></g>
+    <g id="key-8" data-key="8"><rect x="92" y="154" width="56" height="56" fill="#323232" stroke="#2D2D2D" stroke-width="2"/><text x="120" y="182" fill="#00FF00">8</text></g>
+    <g id="key-9" data-key="9"><rect x="154" y="154" width="56" height="56" fill="#323232" stroke="#2D2D2D" stroke-width="2"/><text x="182" y="182" fill="#00FF00">9</text></g>
+    <g id="key-10" data-key="10"><rect x="30" y="216" width="56" height="56" fill="#323232" stroke="#2D2D2D" stroke-width="2"/><text x="58" y="244" fill="#00FF00">10</text></g>
+    <g id="key-11" data-key="11"><rect x="92" y="216" width="56" height="56" fill="#323232" stroke="#2D2D2D" stroke-width="2"/><text x="120" y="244" fill="#00FF00">11</text></g>
+    <g id="key-12" data-key="12"><rect x="154" y="216" width="56" height="56" fill="#323232" stroke="#2D2D2D" stroke-width="2"/><text x="182" y="244" fill="#00FF00">12</text></g>
+  </g>
+</svg>

@@ -1,0 +1,26 @@
+<!-- @dsCard group="Naga V3" -->
+<!doctype html>
+<html><head><meta charset="utf-8">
+  <title>Naga thumb grid</title>
+  <link rel="stylesheet" href="../../../styles.css">
+  <style>
+    body { margin: 0; padding: 20px; background: #000; }
+    .ref { margin-top: 20px; border-top: 1px dashed #2D2D2D; padding-top: 10px; }
+    .ref p { margin: 0 0 6px; color: #828282; font-size: 12px; }
+    .ref img { display: block; max-width: 100%; }
+  </style>
+</head>
+<body class="pc-app">
+<div style="display:flex; gap:28px; align-items:flex-start; flex-wrap:wrap">
+  <img src="../../../assets/naga/naga-side-grid.svg" alt="12-button thumb grid" style="width:240px">
+  <div style="flex:1; min-width:300px">
+    <h2 class="pc-summary__title" style="margin-bottom:8px">Thumb grid &mdash; schematic</h2>
+    <p>12 keys, 3 columns &times; 4 rows, numbered front-to-back, top-to-bottom. Each key in the SVG is <code>&lt;g id="key-N" data-key="N"&gt;</code> so a design can highlight the one being edited.</p>
+    <p class="pc-muted">A schematic, not a traced outline. Check the real button set and order on your own unit.</p>
+    <table class="pc-table" style="margin-top:10px">
+      <thead><tr><th>Key</th><th>Bound to</th></tr></thead>
+      <tbody><tr><td>1</td><td>Keyboard: 1</td></tr><tr aria-selected="true"><td>2</td><td>Keyboard: 2</td></tr><tr><td>3</td><td>Macro: Burst</td></tr></tbody>
+    </table>
+  </div>
+</div>
+</body></html>

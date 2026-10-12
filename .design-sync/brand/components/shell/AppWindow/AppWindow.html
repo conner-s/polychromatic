@@ -1,0 +1,100 @@
+<!-- @dsCard group="Shell" -->
+<!doctype html>
+<html><head><meta charset="utf-8">
+  <title>App window — device page</title>
+  <link rel="stylesheet" href="../../../styles.css">
+  <style>
+    html, body { margin: 0; height: 100%; background: #000; }
+    .pc-window { width: 1100px; height: 1020px; }
+  </style>
+</head>
+<body class="pc-app">
+<div class="pc-window">
+  <nav class="pc-menubar">
+    <button class="pc-menubar__item">File</button><button class="pc-menubar__item">Edit</button>
+    <button class="pc-menubar__item">View</button><button class="pc-menubar__item">Tools</button>
+    <button class="pc-menubar__item">Help</button>
+  </nav>
+  <header class="pc-header"><h1 class="pc-header__title">Razer Naga V3</h1></header>
+  <div class="pc-maintabs" role="tablist">
+    <button class="pc-maintab is-active" role="tab"><img class="pc-icon" src="../../../assets/img-idle/general/devices.svg" alt="">Devices</button>
+    <button class="pc-maintab" role="tab"><img class="pc-icon" src="../../../assets/img-idle/general/effects.svg" alt="">Effects</button>
+    <button class="pc-maintab" role="tab"><img class="pc-icon" src="../../../assets/img-idle/general/presets.svg" alt="">Presets</button>
+    <button class="pc-maintab" role="tab"><img class="pc-icon" src="../../../assets/img-idle/general/triggers.svg" alt="">Triggers</button>
+  </div>
+
+  <div class="pc-body">
+    <aside class="pc-sidebar">
+      <div class="pc-sidebar__heading">Tasks</div>
+      <button class="pc-sidebar__item"><img class="pc-icon" src="../../../assets/img-idle/general/devices.svg" alt="">Apply to All</button>
+      <div class="pc-sidebar__heading">Devices</div>
+      <button class="pc-sidebar__item"><img src="../../../assets/img/devices/keyboard.svg" alt="">Razer BlackWidow V3</button>
+      <button class="pc-sidebar__item"><img src="../../../assets/img/devices/mousemat.svg" alt="">Razer Firefly</button>
+      <button class="pc-sidebar__item is-selected"><img src="../../../assets/img/devices/mouse.svg" alt="">Razer Naga V3</button>
+    </aside>
+
+    <main class="pc-content">
+      <section class="pc-summary">
+        <img class="pc-summary__image" src="../../../assets/img/devices/mouse.svg" alt="">
+        <div class="pc-summary__main">
+          <h2 class="pc-summary__title">Razer Naga V3</h2>
+          <div class="pc-summary__indicators">
+            <span class="pc-indicator"><img src="../../../assets/img/options/spectrum.svg" alt="">Spectrum</span>
+            <span class="pc-indicator"><img src="../../../assets/img/params/75.svg" alt="">75%</span>
+            <span class="pc-indicator"><img src="../../../assets/img/general/dpi.svg" alt="">1800 DPI</span>
+            <span class="pc-indicator"><img src="../../../assets/img/general/battery-75.svg" alt="">75%</span>
+          </div>
+        </div>
+        <div class="pc-summary__actions">
+          <button class="pc-button"><img class="pc-icon" src="../../../assets/img-idle/general/properties.svg" alt="">Details</button>
+        </div>
+      </section>
+
+      <section class="pc-group">
+        <h3 class="pc-group__title">Logo</h3>
+        <div class="pc-row"><div class="pc-row__label">Effect</div><div class="pc-row__controls">
+          <button class="pc-effect-btn is-checked"><img src="../../../assets/img/options/spectrum.svg" alt="">Spectrum</button>
+          <button class="pc-effect-btn"><img src="../../../assets/img/options/static.svg" alt="">Static</button>
+          <button class="pc-effect-btn"><img src="../../../assets/img/options/breath.svg" alt="">Breath</button>
+          <button class="pc-effect-btn"><img src="../../../assets/img/options/reactive.svg" alt="">Reactive</button>
+          <button class="pc-effect-btn"><img src="../../../assets/img/options/none.svg" alt="">None</button>
+        </div></div>
+        <div class="pc-row"><div class="pc-row__label">Brightness</div><div class="pc-row__controls">
+          <input class="pc-slider" type="range" min="0" max="100" value="75" style="--value:75; width:630px">
+        </div></div>
+      </section>
+
+      <section class="pc-group">
+        <h3 class="pc-group__title">Scroll Wheel</h3>
+        <div class="pc-row"><div class="pc-row__label">Effect</div><div class="pc-row__controls">
+          <button class="pc-effect-btn"><img src="../../../assets/img/options/spectrum.svg" alt="">Spectrum</button>
+          <button class="pc-effect-btn is-checked"><img src="../../../assets/img/options/static.svg" alt="">Static</button>
+          <button class="pc-effect-btn"><img src="../../../assets/img/options/breath.svg" alt="">Breath</button>
+          <button class="pc-effect-btn"><img src="../../../assets/img/options/none.svg" alt="">None</button>
+        </div></div>
+        <div class="pc-row"><div class="pc-row__label">Colour</div><div class="pc-row__controls">
+          <span class="pc-swatch" style="--swatch:#00FF00"></span><button class="pc-button">Change...</button>
+        </div></div>
+      </section>
+
+      <section class="pc-group">
+        <h3 class="pc-group__title">Device</h3>
+        <div class="pc-row"><div class="pc-row__label">DPI</div><div class="pc-row__controls">
+          <button class="pc-button">400</button><button class="pc-button">800</button>
+          <button class="pc-button is-checked">1800</button><button class="pc-button">3200</button>
+          <button class="pc-button">6400</button>
+          <button class="pc-button"><img class="pc-icon" src="../../../assets/img-idle/general/edit.svg" alt="">Edit</button>
+        </div></div>
+        <div class="pc-row"><div class="pc-row__label">Polling Rate</div><div class="pc-row__controls">
+          <select class="pc-select" style="width:310px"><option>1000 Hz</option><option>500 Hz</option><option>125 Hz</option></select>
+        </div></div>
+        <div class="pc-row"><div class="pc-row__label"></div><div class="pc-row__controls">
+          <button class="pc-button">Open Input Remapper</button>
+        </div></div>
+      </section>
+    </main>
+  </div>
+
+  <footer class="pc-footer"><span class="pc-status"></span><button class="pc-button">Close Application</button></footer>
+</div>
+</body></html>
