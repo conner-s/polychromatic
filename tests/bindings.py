@@ -16,14 +16,14 @@ class TestBindings(unittest.TestCase):
 
     def test_layout_only_for_supported_devices(self):
         self.assertIsNotNone(self.layout)
-        self.assertEqual(len(self.layout.buttons), 19)
+        self.assertEqual(len(self.layout.buttons), 20)
         self.assertIsNone(bindings.get_layout("Razer DeathAdder V2"))
 
     def test_new_profile_is_factory(self):
         for button in self.layout.buttons:
             self.assertFalse(bindings.is_remapped(self.layout, self.profile, bindings.STANDARD, button.uid))
         self.assertEqual(self.profile[bindings.HYPERSHIFT], {})
-        self.assertIsNone(bindings.get_hypershift_key(self.profile))
+        self.assertEqual(bindings.get_hypershift_key(self.profile), "rf")
 
     def test_remap_and_reset(self):
         bindings.set_binding(self.layout, self.profile, bindings.STANDARD, "s1", {"type": "key", "keys": ["KEY_F1"]})
@@ -40,6 +40,15 @@ class TestBindings(unittest.TestCase):
         bindings.set_binding(self.layout, self.profile, bindings.STANDARD, "s12", shift)
         self.assertEqual(bindings.get_hypershift_key(self.profile), "s12")
         self.assertEqual(self.profile[bindings.STANDARD]["b2"], self.layout.get_button("b2").default)
+
+    def test_moving_factory_hypershift_key_unbinds_it(self):
+        bindings.set_hypershift_key(self.layout, self.profile, "s12")
+        self.assertEqual(bindings.get_hypershift_key(self.profile), "s12")
+        self.assertNotIn("rf", self.profile[bindings.STANDARD])
+
+        bindings.set_binding(self.layout, self.profile, bindings.STANDARD, "rf", self.layout.get_button("rf").default)
+        self.assertEqual(bindings.get_hypershift_key(self.profile), "rf")
+        self.assertEqual(self.profile[bindings.STANDARD]["s12"], self.layout.get_button("s12").default)
 
     def test_hypershift_key_has_no_hypershift_binding(self):
         self.profile[bindings.HYPERSHIFT]["s3"] = {"type": "key", "keys": ["KEY_F3"]}

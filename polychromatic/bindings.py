@@ -127,7 +127,8 @@ def _naga_v3_layout():
         number = str(index + 1)
         buttons.append(Button("s" + number, "Side " + number, number, code, _key(code)))
 
-    # The driver turns wheel tilt and the DPI buttons into F13-F16 key events.
+    # The driver turns wheel tilt, the DPI buttons and the ring finger
+    # Hypershift button into F13-F17 key events.
     # TODO: Confirm which codes the two top-left buttons send on the device.
     buttons += [
         Button("t1", "Top-left 1", "T1", "BTN_EXTRA", _mouse("BTN_EXTRA")),
@@ -137,6 +138,7 @@ def _naga_v3_layout():
         Button("tr", "Tilt right", "›", "KEY_F16", _mouse("HWHEEL_RIGHT")),
         Button("b1", "Below wheel 1", "W1", "KEY_F13", _media("dpi_up")),
         Button("b2", "Below wheel 2", "W2", "KEY_F14", _media("dpi_down")),
+        Button("rf", "Ring finger", "RF", "KEY_F17", _media("hypershift")),
     ]
     return DeviceLayout("naga-v3", "Razer Naga V3", buttons)
 
@@ -265,11 +267,16 @@ def get_hypershift_key(profile):
 def set_hypershift_key(layout, profile, uid):
     """
     Make a button the Hypershift key, or pass None to remove the layer key.
-    The previous key goes back to its factory binding.
+    The previous key goes back to its factory binding, or is unbound if that
+    binding is Hypershift.
     """
     previous = get_hypershift_key(profile)
     if previous:
-        profile[STANDARD][previous] = copy.deepcopy(layout.get_button(previous).default)
+        default = layout.get_button(previous).default
+        if is_hypershift(default):
+            profile[STANDARD].pop(previous)
+        else:
+            profile[STANDARD][previous] = copy.deepcopy(default)
     if uid:
         profile[STANDARD][uid] = _media("hypershift")
         profile[HYPERSHIFT].pop(uid, None)
